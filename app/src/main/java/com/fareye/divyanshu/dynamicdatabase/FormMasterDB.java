@@ -58,7 +58,7 @@ public class FormMasterDB extends SQLiteOpenHelper {
         values.put(KEY_FORM_ID, formMaster.getId());
         values.put(KEY_NAME, formMaster.getName());
         // Inserting Row
-        sqLiteDatabase.insert(TABLE_FORMS, null, values);
+        sqLiteDatabase.insertOrThrow(TABLE_FORMS, null, values);
     }
 
     // Upgrading database

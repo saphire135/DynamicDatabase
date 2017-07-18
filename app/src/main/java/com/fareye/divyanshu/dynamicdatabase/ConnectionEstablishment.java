@@ -140,5 +140,8 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
             // formAttributesDB.testAttributesDB();
             return true;
         }
+        finally {
+
+        }
     }
 }
