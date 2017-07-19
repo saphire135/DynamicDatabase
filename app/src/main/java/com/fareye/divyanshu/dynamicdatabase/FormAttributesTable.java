@@ -24,7 +24,7 @@ public class FormAttributesTable extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 1;
 
 
-    public static final String FROM_ATTRIBUTE_DATABASE_CREATE = "CREATE TABLE " + FORM_ATTRIBUTE_TABLE_NAME
+    public static final String FROM_ATTRIBUTE_DATABASE_CREATE = "CREATE TABLE  IF NOT EXISTS " + FORM_ATTRIBUTE_TABLE_NAME
             + " ("
             + ID + " INTEGER PRIMARY KEY,"
             + FORM_MASTERID + " INTEGER,"
@@ -69,12 +69,13 @@ public class FormAttributesTable extends SQLiteOpenHelper{
         }
     }
 
+    ArrayList<FormAttributes> ar = new ArrayList<>();
     public ArrayList<FormAttributes> getAttributes(int id) {
         Log.d("UserDBHelper", "in getAllUsers()");
         String countQuery = "SELECT  * FROM " + FORM_ATTRIBUTE_TABLE_NAME + " WHERE " + FORM_MASTERID + " = " + id;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(countQuery, null);
-        ArrayList<FormAttributes> formAttributesArrayList = new ArrayList<>();
+
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 FormAttributes formAttributes = new FormAttributes();
@@ -83,10 +84,10 @@ public class FormAttributesTable extends SQLiteOpenHelper{
                 formAttributes.setLabel(cursor.getString(cursor.getColumnIndex(LABEL)));
                 formAttributes.setType(cursor.getString(cursor.getColumnIndex(TYPE)));
                 formAttributes.setSequence(cursor.getString(cursor.getColumnIndex(SEQUENCE)));
-                formAttributesArrayList.add(formAttributes);
+                ar.add(formAttributes);
             }
         }
-        return formAttributesArrayList;
+        return ar;
     }
 
     public ArrayList<FormAttributes> getAllAttributes() {
@@ -94,7 +95,7 @@ public class FormAttributesTable extends SQLiteOpenHelper{
         String countQuery = "SELECT  * FROM " + FORM_ATTRIBUTE_TABLE_NAME;
         SQLiteDatabase sqLiteDatabase = FormAttributesTable.this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(countQuery, null);
-        ArrayList<FormAttributes> formAttributesArrayList = new ArrayList<>();
+
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 FormAttributes formAttributes = new FormAttributes();
@@ -103,10 +104,10 @@ public class FormAttributesTable extends SQLiteOpenHelper{
                 formAttributes.setLabel(cursor.getString(cursor.getColumnIndex(LABEL)));
                 formAttributes.setType(cursor.getString(cursor.getColumnIndex(TYPE)));
                 formAttributes.setSequence(cursor.getString(cursor.getColumnIndex(SEQUENCE)));
-                formAttributesArrayList.add(formAttributes);
+                ar.add(formAttributes);
             }
         }
-        return formAttributesArrayList;
+        return ar;
     }
 
 }

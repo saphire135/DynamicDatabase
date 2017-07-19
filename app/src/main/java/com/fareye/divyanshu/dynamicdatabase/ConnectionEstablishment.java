@@ -11,10 +11,6 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -42,11 +38,12 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        gsonBuilder = new GsonBuilder();
+        gson = gsonBuilder.create();
         progressDialog = ProgressDialog.show(mcontext,
                 "ProgressDialog",
                 "Wait for some seconds");
-        gsonBuilder = new GsonBuilder();
-        gson = gsonBuilder.create();
+
 
     }
 
@@ -61,21 +58,21 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
         HttpURLConnection urlConnection = null;//Object of httpurlconnection class.
 //
         try {
-            url = new URL(link);//String conversion in url type.
-            urlConnection = (HttpURLConnection) url.openConnection();//Urlconnection opened.
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            //FormMasterDB the BufferedInputStream in the form of Inputstream.
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            //Storing all the elements in stringbuilder.
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            Log.d("JSON String", stringBuilder.toString());
-            bufferedReader.close();//Closing BufferedReader.
-            String linknew = stringBuilder.toString();
-//        String linknew = "{ \"id\": 1, \"name\":\"Home\", \"formMaster\": [ { \"id\": 1, \"label\": \"Firstname\", \"type\": \"string\", \"sequence\": 1 }, { \"id\": 2, \"label\": \"Lastname\", \"type\": \"string\", \"sequence\": 2 }, { \"id\": 3, \"label\": \"Contact\", \"type\": \"number\", \"sequence\": 3 }, { \"id\": 4, \"label\": \"Address\", \"type\": \"text\", \"sequence\":4 } ] }";
+//            url = new URL(link);//String conversion in url type.
+//            urlConnection = (HttpURLConnection) url.openConnection();//Urlconnection opened.
+//            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+//            //FormMasterDB the BufferedInputStream in the form of Inputstream.
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+//            StringBuilder stringBuilder = new StringBuilder();
+//            String line;
+//            //Storing all the elements in stringbuilder.
+//            while ((line = bufferedReader.readLine()) != null) {
+//                stringBuilder.append(line);
+//            }
+//            Log.d("JSON String", stringBuilder.toString());
+//            bufferedReader.close();//Closing BufferedReader.
+//            String linknew = stringBuilder.toString();
+        String linknew = "{ \"id\": 1, \"name\":\"Home\", \"formMaster\": [ { \"id\": 1, \"label\": \"Firstname\", \"type\": \"string\", \"sequence\": 1 }, { \"id\": 2, \"label\": \"Lastname\", \"type\": \"string\", \"sequence\": 2 }, { \"id\": 3, \"label\": \"Contact\", \"type\": \"number\", \"sequence\": 3 }, { \"id\": 4, \"label\": \"Address\", \"type\": \"text\", \"sequence\":4 } ] }";
             buildUserList(linknew);
 
             if (linknew != null) {

@@ -9,6 +9,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import static com.fareye.divyanshu.dynamicdatabase.FormAttributesTable.FROM_ATTRIBUTE_DATABASE_CREATE;
+
 /**
  * Created by divyanshu on 7/7/17.
  */
@@ -37,15 +39,15 @@ public class FormMasterDB extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
-    String CREATE_FORMS_TABLE = "CREATE TABLE " + TABLE_FORMS + "("
-            + KEY_FORM_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT)";
-    static FormAttributesTable fat = new FormAttributesTable(context);
+    String CREATE_FORMS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_FORMS + "("
+            + KEY_FORM_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT);";
+//    static FormAttributesTable fat = new FormAttributesTable(context);
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL(CREATE_FORMS_TABLE);
-        db.execSQL(fat.FROM_ATTRIBUTE_DATABASE_CREATE);
+        db.execSQL(FROM_ATTRIBUTE_DATABASE_CREATE);
 
 }
 

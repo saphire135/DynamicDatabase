@@ -19,6 +19,7 @@ import com.fareye.divyanshu.dynamicdatabase.FormAttributes;
 import com.fareye.divyanshu.dynamicdatabase.FormAttributesTable;
 import com.fareye.divyanshu.dynamicdatabase.FormMasterDB;
 import com.fareye.divyanshu.dynamicdatabase.R;
+import com.fareye.divyanshu.dynamicdatabase.SaveFieldsInDatabase;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,8 @@ public class FillAttributes extends AppCompatActivity {
     LinearLayout ll;
     ScrollView scrl;
     static Context mcontext;
-    static ArrayList<EditText> AttributesInEditText;
+    public ArrayList<EditText> AttributesInEditText;
+    public ArrayList<FormAttributes> ArrayOfAttributes= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class FillAttributes extends AppCompatActivity {
         formMasterDB = new FormMasterDB(this);
         sqLiteDatabase = formMasterDB.getWritableDatabase();
 
-        ArrayList<FormAttributes> ArrayOfAttributes = formAttributesTable.getAllAttributes();
+         ArrayOfAttributes = formAttributesTable.getAllAttributes();
         Log.d("Hello", ArrayOfAttributes.toString());
         generateFormAttributes(ArrayOfAttributes);
 
@@ -77,11 +79,11 @@ public class FillAttributes extends AppCompatActivity {
         add_btn.setText("Save Form");
         ll.addView(add_btn);
         add_btn.setOnClickListener(new View.OnClickListener() {
-
+    SaveFieldsInDatabase saveFieldsInDatabase = new SaveFieldsInDatabase(mcontext,"",null,1);
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-
+                saveFieldsInDatabase.saveFieldsInTable();
 
             }
         });
