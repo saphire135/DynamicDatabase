@@ -9,8 +9,6 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import static com.fareye.divyanshu.dynamicdatabase.FormAttributesTable.FROM_ATTRIBUTE_DATABASE_CREATE;
-
 /**
  * Created by divyanshu on 7/7/17.
  */
@@ -22,14 +20,14 @@ public class FormMasterDB extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "databaseforms";
+    public static final String DATABASE_NAME = "databaseforms";
 
     // Contacts table name
     public String TABLE_FORMS = "forms";
 
 
     // Contacts Table Columns names
-    private static final String KEY_FORM_ID = "id";
+    public static final String KEY_FORM_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_ATTRIBUTES = "formMaster";
 
@@ -39,23 +37,22 @@ public class FormMasterDB extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
+
     String CREATE_FORMS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_FORMS + "("
             + KEY_FORM_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT);";
-//    static FormAttributesTable fat = new FormAttributesTable(context);
+
+    //    static FormAttributesTable fat = new FormAttributesTable(context);
     // Creating Tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         db.execSQL(CREATE_FORMS_TABLE);
-        db.execSQL(FROM_ATTRIBUTE_DATABASE_CREATE);
-
-}
+    }
 
 
     public void addFormMaster(SQLiteDatabase sqLiteDatabase, FormMaster formMaster) {
         //  onCreate(sqLiteDatabase);
         Log.d("FormMasterDB", "in addFormMaster()");
-        Log.d("Table",CREATE_FORMS_TABLE);
+        Log.d("Table", CREATE_FORMS_TABLE);
         ContentValues values = new ContentValues();
         values.put(KEY_FORM_ID, formMaster.getId());
         values.put(KEY_NAME, formMaster.getName());

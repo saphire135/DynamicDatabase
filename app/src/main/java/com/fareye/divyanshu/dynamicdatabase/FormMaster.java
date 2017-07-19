@@ -20,9 +20,10 @@ public class FormMaster {
         this.formMaster = formMaster;
     }
 
-      public int getId() {
+    public int getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }

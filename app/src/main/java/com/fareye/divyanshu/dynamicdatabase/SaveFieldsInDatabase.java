@@ -2,21 +2,16 @@ package com.fareye.divyanshu.dynamicdatabase;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.fareye.divyanshu.dynamicdatabase.ViewForms.FillAttributes;
 
 import java.util.ArrayList;
 
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
-
-public class SaveFieldsInDatabase extends SQLiteOpenHelper{
-        FillAttributes fillAttributes = new FillAttributes();
+public class SaveFieldsInDatabase extends SQLiteOpenHelper {
+    //  FillAttributes fillAttributes = new FillAttributes();
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
@@ -28,74 +23,46 @@ public class SaveFieldsInDatabase extends SQLiteOpenHelper{
     public static final String FORM_ATTRIBUTE_ID = "form_attr_id";
     public static final String FORM_ATTRIBUTE_VALUE = "form_attr_value";
 
-    Context context;
+    //  Context context;
     public static final String FROM_DATABASE_CREATE = "CREATE TABLE IF NOT EXISTS Entered_Fields ("
             + FORM_ID + " INTEGER PRIMARY KEY,"
-            + FORM_ATTRIBUTE_ID + " INTEGER,"
+            + FORM_ATTRIBUTE_ID + " TEXT,"
             + FORM_ATTRIBUTE_VALUE + " TEXT);";
-        ArrayList<EditText> AttributesInEditText = new ArrayList<EditText>();
-     SQLiteDatabase sqLiteDatabase;
+    ArrayList<EditText> AttributesInEditText = new ArrayList<EditText>();
+    SQLiteDatabase sqLiteDatabase;
+    Context context;
 
-    public SaveFieldsInDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public SaveFieldsInDatabase(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(FROM_DATABASE_CREATE);
-        this.context = context;
+    }
 
+    public void test() {
+        for (SaveFieldsTable form : getALLFormAttributes()) {
+            Log.i("in test()>>>>>>>>>", form.getFromAttributeId() + ": " + form.getFormAttributeValue());
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        Log.d("FormDB", "in onUpgrade()");
+        Log.d("SaveFieldsInDatabase", "in onUpgrade()");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_Fields);
         onCreate(sqLiteDatabase);
     }
 
-    FormMasterDB formDB = new FormMasterDB(context);
+    // FormMasterDB SaveFieldsInDatabase = new FormMasterDB(context);
 
-    public void saveFieldsInTable() {
-        Log.d("AddFormActivity", "in saveFieldsInTable()");
-        boolean fieldNotEmpty = true;
-
-        ArrayList<SaveFieldsTable> formArrayList = new ArrayList<>();
-        int attributeIndex = 0;
-
-        if (fillAttributes.AttributesInEditText != null) {
-            for (EditText attributeEditText : fillAttributes.AttributesInEditText) {
-                if (attributeEditText.getText().length() == 0) {
-                    fieldNotEmpty = false;
-                } else {
-                    FormAttributes attributes = fillAttributes.ArrayOfAttributes.get(attributeIndex);
-                    SaveFieldsTable form = new SaveFieldsTable(Integer.parseInt(attributes.getId()), attributeEditText.getText().toString());
-                    formArrayList.add(form);
-                    attributeIndex++;
-                }
-            }
-            if (fieldNotEmpty) {
-                Log.d("AddFormActivity", "Edit Text fields are not empty");
-                if (insertForm(formArrayList)) {
-                    Toast.makeText(context, "Form saved successfully!", LENGTH_SHORT).show();
-                    fillAttributes.onBackPressed();
-                } else {
-                    Log.d("AddFormActivity", "Error saving form");
-                    Toast.makeText(context, "Not Saved", LENGTH_SHORT).show();
-                }
-
-            } else {
-                Toast.makeText(context, "One or more field is empty!", LENGTH_LONG).show();
-            }
-        }}
 
     public boolean insertForm(ArrayList<SaveFieldsTable> formArrayList) {
-        Log.d("FormDB", "in insertForm()");
-
-        // SQLiteDatabase sqLiteDatabase = context.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
-         sqLiteDatabase = this.getWritableDatabase();
+        //SQLiteDatabase sqLiteDatabase = context.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         try {
-            sqLiteDatabase.beginTransactionNonExclusive();
+            //sqLiteDatabase.beginTransactionNonExclusive();
             for (SaveFieldsTable form : formArrayList) {
                 ContentValues values = new ContentValues();
                 values.put(FORM_ATTRIBUTE_ID, form.getFromAttributeId());
@@ -103,17 +70,73 @@ public class SaveFieldsInDatabase extends SQLiteOpenHelper{
 
                 sqLiteDatabase.insert(TABLE_Fields, null, values);
             }
-            sqLiteDatabase.setTransactionSuccessful();
-
+            Log.d("insertFrom", "successssssssss");
+            // sqLit
+            //eDatabase.setTransactionSuccessful();
+            test();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
-            sqLiteDatabase.endTransaction();
+            // sqLiteDatabase.endTransaction();
             sqLiteDatabase.close();
         }
     }
 
+    public ArrayList<SaveFieldsTable> getForm(int startingAttribute, int lastAttribute) {
+        Log.d("FormDB", "in getForm()");
+        Cursor cursor = getAttributeCursor(startingAttribute, lastAttribute);
+        ArrayList<SaveFieldsTable> formArraylist = new ArrayList<>();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                SaveFieldsTable form = new SaveFieldsTable();
+                String idString = cursor.getString(cursor.getColumnIndex(FORM_ATTRIBUTE_ID));
+                form.setFromAttributeId(Integer.parseInt(idString));
+                form.setFormAttributeValue(cursor.getString(cursor.getColumnIndex(FORM_ATTRIBUTE_VALUE)));
+                formArraylist.add(form);
+            }
+            cursor.close();
+            return formArraylist;
+        } else {
+            return null;
+        }
+    }
 
+    public Cursor getAttributeCursor(int startingAttributeID, int lastAtributeID) {
+        Log.d("FormDB", "in getAttributeCursor()");
+        String countQuery = "SELECT  * FROM " + TABLE_Fields + " WHERE " + FORM_ATTRIBUTE_ID + " BETWEEN " + startingAttributeID + " AND " + lastAtributeID;
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        // SQLiteDatabase sqLiteDatabase = context.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
+
+        Cursor cursor = sqLiteDatabase.rawQuery(countQuery, null);
+
+        // return count
+        return cursor;
+    }
+
+    public ArrayList<SaveFieldsTable> getALLFormAttributes() {
+        Log.d("FormDB", "in getALLFormAttributes()");
+        String countQuery = "SELECT * FROM " + TABLE_Fields;
+        // SQLiteDatabase sqLiteDatabase = context.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
+
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(countQuery, null);
+        ArrayList<SaveFieldsTable> formArraylist = new ArrayList<>();
+        //  Log.d("FormDB", cursor.getCount() + "");
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                SaveFieldsTable form = new SaveFieldsTable();
+                String idString = cursor.getString(cursor.getColumnIndex(FORM_ATTRIBUTE_ID));
+                form.setFromAttributeId(Integer.parseInt(idString));
+                form.setFormAttributeValue(cursor.getString(cursor.getColumnIndex(FORM_ATTRIBUTE_VALUE)));
+
+                formArraylist.add(form);
+            }
+            cursor.close();
+            return formArraylist;
+        } else {
+            return null;
+        }
+    }
 }

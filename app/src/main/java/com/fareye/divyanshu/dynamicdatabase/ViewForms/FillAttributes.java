@@ -20,6 +20,7 @@ import com.fareye.divyanshu.dynamicdatabase.FormAttributesTable;
 import com.fareye.divyanshu.dynamicdatabase.FormMasterDB;
 import com.fareye.divyanshu.dynamicdatabase.R;
 import com.fareye.divyanshu.dynamicdatabase.SaveFieldsInDatabase;
+import com.fareye.divyanshu.dynamicdatabase.SaveFieldsTable;
 
 import java.util.ArrayList;
 
@@ -32,13 +33,14 @@ public class FillAttributes extends AppCompatActivity {
     ScrollView scrl;
     static Context mcontext;
     public ArrayList<EditText> AttributesInEditText;
-    public ArrayList<FormAttributes> ArrayOfAttributes= new ArrayList<>();
+    public ArrayList<FormAttributes> ArrayOfAttributes = new ArrayList<>();
+    SaveFieldsInDatabase saveFieldsInDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fill_attributes);
-
+        saveFieldsInDatabase = new SaveFieldsInDatabase(this);
         scrl = new ScrollView(this);
         ll = new LinearLayout(this);
 
@@ -48,14 +50,14 @@ public class FillAttributes extends AppCompatActivity {
         formMasterDB = new FormMasterDB(this);
         sqLiteDatabase = formMasterDB.getWritableDatabase();
 
-         ArrayOfAttributes = formAttributesTable.getAllAttributes();
+        ArrayOfAttributes = formAttributesTable.getAllAttributes();
         Log.d("Hello", ArrayOfAttributes.toString());
         generateFormAttributes(ArrayOfAttributes);
 
     }
 
     public void generateFormAttributes(ArrayList<FormAttributes> ArrayOfAttributes) {
-        Log.d("AddFormActivity", "in generateformview()" + ArrayOfAttributes.size());
+        Log.d("Adding", "in generateformview()" + ArrayOfAttributes.size());
         AttributesInEditText = new ArrayList<EditText>();
 
         for (int i = 0; i < ArrayOfAttributes.size(); i++) {
@@ -63,7 +65,7 @@ public class FillAttributes extends AppCompatActivity {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(10, 10, 10, 30);
             AttributesInEditText.get(i).setLayoutParams(params);
-            AttributesInEditText.get(i).setHint("Enter " + ArrayOfAttributes.get(i).getLabel());
+            AttributesInEditText.get(i).setHint("Your " + ArrayOfAttributes.get(i).getLabel());
 
             if (ArrayOfAttributes.get(i).getType().equals("number")) {
                 AttributesInEditText.get(i).setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -74,27 +76,58 @@ public class FillAttributes extends AppCompatActivity {
             ll.addView(AttributesInEditText.get(i));
             Log.d("generateFormView", "Layout added");
         }
-
-        Button add_btn=new Button(this);
+        Button add_btn = new Button(this);
         add_btn.setText("Save Form");
         ll.addView(add_btn);
         add_btn.setOnClickListener(new View.OnClickListener() {
-    SaveFieldsInDatabase saveFieldsInDatabase = new SaveFieldsInDatabase(mcontext,"",null,1);
+            SaveFieldsInDatabase saveFieldsInDatabase = new SaveFieldsInDatabase(FillAttributes.mcontext);
+
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                saveFieldsInDatabase.saveFieldsInTable();
-
+                saveFieldsInTable();
+                Intent intent = new Intent(FillAttributes.this, AddYourJson.class);
+                startActivity(intent);
             }
         });
 
-
         this.setContentView(scrl);
     }
-    @Override
-        public void onBackPressed() {
-            super.onBackPressed();
-            startActivity(new Intent(this, AddYourJson.class));
-            this.finish();
+
+    public void saveFieldsInTable() {
+        Log.d("Adding", "in saveFieldsInTable()");
+        boolean fieldNotEmpty = true;
+
+        ArrayList<SaveFieldsTable> formArrayList = new ArrayList<>();
+        int attributeIndex = 0;
+
+        if (AttributesInEditText != null) {
+            for (EditText attributeEditText : AttributesInEditText) {
+                if (attributeEditText.getText().length() == 0) {
+                    fieldNotEmpty = false;
+                } else {
+                    FormAttributes attributes = ArrayOfAttributes.get(attributeIndex);
+                    SaveFieldsTable form = new SaveFieldsTable(Integer.parseInt(attributes.getId()), attributeEditText.getText().toString());
+                    formArrayList.add(form);
+                    attributeIndex++;
+                }
+            }
+            if (fieldNotEmpty) {
+
+                if (saveFieldsInDatabase.insertForm(formArrayList)) {
+
+                }
+            } else {
+                //Toast.makeText(context, "Incomplete entries", LENGTH_LONG).show();
+            }
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, AddYourJson.class));
+        this.finish();
+    }
 }

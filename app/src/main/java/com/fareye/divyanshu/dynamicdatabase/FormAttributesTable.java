@@ -1,4 +1,5 @@
 package com.fareye.divyanshu.dynamicdatabase;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,11 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+
 /**
  * Created by diyanshu on 16/7/17.
  */
 
-public class FormAttributesTable extends SQLiteOpenHelper{
+public class FormAttributesTable extends SQLiteOpenHelper {
 
     public static final String FORM_ATTRIBUTE_TABLE_NAME = "attribute_master";
     public static final String ID = "id";
@@ -39,7 +41,7 @@ public class FormAttributesTable extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.d("FormMasterDB", "in onCreate()");
-
+        sqLiteDatabase.execSQL(FROM_ATTRIBUTE_DATABASE_CREATE);
     }
 
     @Override
@@ -48,11 +50,13 @@ public class FormAttributesTable extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FORM_ATTRIBUTE_TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
+
     public void testAttributesDB() {
         for (FormAttributes attributes : getAllAttributes()) {
             Log.d("TEST Attributes >>>>>", attributes.getId() + " " + attributes.getLabel() + " " + attributes.getType() + " " + attributes.getSequence());
         }
     }
+
     public void addFormAttributes(SQLiteDatabase sqLiteDatabase, int FormMasterId, ArrayList<FormAttributes> formAttributes) {
 //        onUpgrade(sqLiteDatabase, DATABASE_VERSION, 0);
         onCreate(sqLiteDatabase);
@@ -69,15 +73,17 @@ public class FormAttributesTable extends SQLiteOpenHelper{
         }
     }
 
-    ArrayList<FormAttributes> ar = new ArrayList<>();
+
     public ArrayList<FormAttributes> getAttributes(int id) {
         Log.d("UserDBHelper", "in getAllUsers()");
-        String countQuery = "SELECT  * FROM " + FORM_ATTRIBUTE_TABLE_NAME + " WHERE " + FORM_MASTERID + " = " + id;
+        String countQuery = "SELECT  * FROM " + FORM_ATTRIBUTE_TABLE_NAME + " WHERE " + FORM_MASTERID + " = " +id ;
+        Log.d("CountWuery",countQuery);
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery(countQuery, null);
-
+        ArrayList<FormAttributes> ar = new ArrayList<>();
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
+                Log.d("Cursor",String.valueOf(cursor.getCount()));
                 FormAttributes formAttributes = new FormAttributes();
                 String idString = cursor.getString(cursor.getColumnIndex(ID));
                 formAttributes.setId(idString);
@@ -85,12 +91,15 @@ public class FormAttributesTable extends SQLiteOpenHelper{
                 formAttributes.setType(cursor.getString(cursor.getColumnIndex(TYPE)));
                 formAttributes.setSequence(cursor.getString(cursor.getColumnIndex(SEQUENCE)));
                 ar.add(formAttributes);
+                Log.d("formattributesarraylist",formAttributes.getSequence());
+                Log.d("ararraylist",ar.get(0).getLabel());
             }
         }
         return ar;
     }
 
     public ArrayList<FormAttributes> getAllAttributes() {
+        ArrayList<FormAttributes> ar = new ArrayList<>();
         Log.d("UserDBHelper", "in getAllUsers()");
         String countQuery = "SELECT  * FROM " + FORM_ATTRIBUTE_TABLE_NAME;
         SQLiteDatabase sqLiteDatabase = FormAttributesTable.this.getReadableDatabase();
@@ -109,5 +118,4 @@ public class FormAttributesTable extends SQLiteOpenHelper{
         }
         return ar;
     }
-
 }

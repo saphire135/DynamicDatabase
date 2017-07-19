@@ -19,13 +19,15 @@ import java.util.ArrayList;
 import Adapters.FormAdapterClickListener;
 import Adapters.FormViewAdapter;
 
+import static com.fareye.divyanshu.dynamicdatabase.FormMasterDB.KEY_FORM_ID;
+
 public class ViewVariousForms extends AppCompatActivity implements FormAdapterClickListener {
 
     RecyclerView formRecyclerView;
     public static final String FORMNAME = "form_name";
     public static final String FORMID = "form_id";
 
-          @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("ViewVariousForms", "onCreate()");
         super.onCreate(savedInstanceState);
@@ -54,12 +56,16 @@ public class ViewVariousForms extends AppCompatActivity implements FormAdapterCl
         alertDialog.setMessage("Do you want to view or add a form ??");
         alertDialog.setNegativeButton("VIEW", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(ViewVariousForms.this, FillAttributes.class);
+                Intent intent = new Intent(ViewVariousForms.this, ViewFormOfAttributes.class);
+                intent.putExtra(KEY_FORM_ID, formMaster.getId());
+                Log.d("test()", formMaster.getId() + "");
+                startActivity(intent);
             }
         });
         alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(ViewVariousForms.this, FillAttributes.class);
+                Log.d("test()>>>>>>>>>>>>", formMaster.getId() + "");
                 intent.putExtra(FORMID, formMaster.getId());
                 intent.putExtra(FORMNAME, formMaster.getName());
                 startActivity(intent);
