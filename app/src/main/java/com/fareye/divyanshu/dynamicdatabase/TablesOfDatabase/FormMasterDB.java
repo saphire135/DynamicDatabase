@@ -8,8 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.fareye.divyanshu.dynamicdatabase.DTO.FormMaster;
+import com.fareye.divyanshu.dynamicdatabase.DTO.SaveFieldsTable;
 
 import java.util.ArrayList;
+
+import static com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase.FORM_ATTRIBUTE_ID;
+import static com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase.FORM_ATTRIBUTE_VALUE;
 
 /**
  * Created by divyanshu on 7/7/17.
@@ -69,6 +73,33 @@ public class FormMasterDB extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FORMS);
         // Create tables again
         onCreate(db);
+    }
+
+    public boolean updateForm(ArrayList<SaveFieldsTable> formArrayList) {
+        Log.d("FormDB", "in updateForm()");
+        // SQLiteDatabase sqLiteDatabase = context.openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        try {
+            sqLiteDatabase.beginTransactionNonExclusive();
+            int i = 0;
+            for (SaveFieldsTable form : formArrayList) {
+                ContentValues values = new ContentValues();
+                values.put(FORM_ATTRIBUTE_VALUE, form.getFormAttributeValue());
+                // Updating Row
+                sqLiteDatabase.update("Entered_Fields", values, FORM_ATTRIBUTE_ID + " = " + form.getFromAttributeId(), null);
+                i++;
+            }
+            sqLiteDatabase.setTransactionSuccessful();
+            Log.d("FormDB", "update succesful()" + i);
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            sqLiteDatabase.endTransaction();
+            sqLiteDatabase.close();
+        }
     }
 
     public ArrayList<FormMaster> getAllForms() {

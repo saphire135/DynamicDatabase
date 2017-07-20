@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.fareye.divyanshu.dynamicdatabase.DTO.FormAttributes;
 import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormAttributesTable;
 import com.fareye.divyanshu.dynamicdatabase.R;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB;
 import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase;
 import com.fareye.divyanshu.dynamicdatabase.DTO.SaveFieldsTable;
 
@@ -50,14 +52,13 @@ public class ViewFormOfAttributes extends AppCompatActivity {
             Toast.makeText(this, "No form present!", Toast.LENGTH_SHORT).show();
             onBackPressed();
         }
-
     }
-
     private void buildFormView(ArrayList<SaveFieldsTable> formArrayList) {
         Log.d("ViewFormActivity", "buildFormView");
         //Toast.makeText(this, formArrayList.size() + "", Toast.LENGTH_LONG).show();
         arraylistOfEdittextFields = new EditText[formArrayList.size()];
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            Log.d("arrays length",String.valueOf(arraylistOfEdittextFields.length));
         for (int i = 0; i < arraylistOfEdittextFields.length; i++) {
             arraylistOfEdittextFields[i] = new EditText(this);
             formAttributeLabelTV = new TextView(this);
@@ -66,6 +67,7 @@ public class ViewFormOfAttributes extends AppCompatActivity {
             formAttributeLabelTV.setPadding(10, 10, 10, 10);
             formAttributeLabelTV.setTypeface(null, Typeface.BOLD_ITALIC);
             formAttributeLabelTV.setLayoutParams(params);
+           // Log.d("Testing",formAttributesArrayList.get(i).getType());
             if (formAttributesArrayList.get(i).getType().equals("number")) {
                 arraylistOfEdittextFields[i].setInputType(InputType.TYPE_CLASS_NUMBER);
             } else if (formAttributesArrayList.get(i).getType().equals("string")) {
@@ -80,4 +82,38 @@ public class ViewFormOfAttributes extends AppCompatActivity {
             parentLinearLayout.addView(arraylistOfEdittextFields[i]);
         }
     }
+
+    public void updateButton(View view) {
+        Log.d("ViewFormActivity", "updateButton");
+        boolean fieldNotEmpty = true;
+
+        ArrayList<SaveFieldsTable> formArrayList = new ArrayList<>();
+        int attributeIndex = 0;
+        if (arraylistOfEdittextFields != null) {
+            for (EditText attributeEditText : arraylistOfEdittextFields) {
+                if (attributeEditText.getText().length() == 0) {
+                    fieldNotEmpty = false;
+                } else {
+                    FormAttributes attributes = formAttributesArrayList.get(attributeIndex);
+                    SaveFieldsTable form = new SaveFieldsTable(Integer.parseInt(attributes.getId()), attributeEditText.getText().toString());
+                    formArrayList.add(form);
+                    attributeIndex++;
+                }
+            }
+            if (fieldNotEmpty) {
+                Log.d("ViewFormActivity", "Edit Text fields are not empty");
+                FormMasterDB formMasterDB = new FormMasterDB(this);
+                if (formMasterDB.updateForm(formArrayList)) {
+                    Toast.makeText(this, "Form updated successfully!", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                } else {
+                    Log.d("AddFormActivity", "Error savinf form");
+                    Toast.makeText(this, "Error saving form!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "One or more field is empty!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 }

@@ -13,16 +13,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
-import com.fareye.divyanshu.dynamicdatabase.MainClasses.AddYourJson;
 import com.fareye.divyanshu.dynamicdatabase.DTO.FormAttributes;
+import com.fareye.divyanshu.dynamicdatabase.DTO.SaveFieldsTable;
+import com.fareye.divyanshu.dynamicdatabase.MainClasses.AddYourJson;
+import com.fareye.divyanshu.dynamicdatabase.R;
 import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormAttributesTable;
 import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB;
-import com.fareye.divyanshu.dynamicdatabase.R;
 import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase;
-import com.fareye.divyanshu.dynamicdatabase.DTO.SaveFieldsTable;
 
 import java.util.ArrayList;
+
+import static android.widget.Toast.LENGTH_LONG;
+import static com.fareye.divyanshu.dynamicdatabase.ViewForms.ViewVariousForms.FORMID;
 
 public class FillAttributes extends AppCompatActivity {
     SQLiteDatabase sqLiteDatabase;
@@ -50,9 +54,15 @@ public class FillAttributes extends AppCompatActivity {
         formMasterDB = new FormMasterDB(this);
         sqLiteDatabase = formMasterDB.getWritableDatabase();
 
-        ArrayOfAttributes = formAttributesTable.getAllAttributes();
+        ArrayOfAttributes = formAttributesTable.getAttributes(getIntent().getIntExtra(FORMID, 0));
         Log.d("Hello", ArrayOfAttributes.toString());
-        generateFormAttributes(ArrayOfAttributes);
+        int startAttributeID = Integer.parseInt(ArrayOfAttributes.get(0).getId());
+        int lastAttributeId = Integer.parseInt(ArrayOfAttributes.get(ArrayOfAttributes.size() - 1).getId());
+        if (saveFieldsInDatabase.getAttributeCursor(startAttributeID, lastAttributeId).getCount() == 0) {
+            generateFormAttributes(ArrayOfAttributes);
+        } else {
+            Toast.makeText(this, "Form Already Present", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -118,11 +128,12 @@ public class FillAttributes extends AppCompatActivity {
 
                 }
             } else {
-                //Toast.makeText(context, "Incomplete entries", LENGTH_LONG).show();
+                Toast.makeText(this, "Incomplete entries", LENGTH_LONG).show();
             }
         }
 
     }
+
 
     @Override
     public void onBackPressed() {

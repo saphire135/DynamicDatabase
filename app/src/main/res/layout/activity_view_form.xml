@@ -20,6 +20,15 @@
 
     </LinearLayout>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/form_attribute_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:onClick="updateButton"
+            android:text="update" />
+
     </RelativeLayout>
 
 </ScrollView>

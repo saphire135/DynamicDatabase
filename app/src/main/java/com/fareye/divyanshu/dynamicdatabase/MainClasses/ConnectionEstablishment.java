@@ -77,7 +77,7 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
             bufferedReader.close();//Closing BufferedReader.
             String linknew = stringBuilder.toString();
 //            String linknew = "{ \"id\": 1, \"name\":\"Home\", \"formMaster\": [ { \"id\": 1, \"label\": \"Firstname\", \"type\": \"string\", \"sequence\": 1 }, { \"id\": 2, \"label\": \"Lastname\", \"type\": \"string\", \"sequence\": 2 }, { \"id\": 3, \"label\": \"Contact\", \"type\": \"number\", \"sequence\": 3 }, { \"id\": 4, \"label\": \"Address\", \"type\": \"text\", \"sequence\":4 } ] }";
-            formMaster=  buildUserList(linknew);
+            formMaster = buildUserList(linknew);
 
             if (linknew != null) {
 
@@ -120,6 +120,7 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
             return null;
         }
     }
+
     private boolean storeData(FormMaster formMaster) {
         try {
             Log.d("FetchRequestData", "in storeData()");
@@ -135,6 +136,6 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
             return true;
         } finally {
             sqLiteDatabase.endTransaction();
-                    }
+        }
     }
 }
