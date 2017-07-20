@@ -1,4 +1,4 @@
-package com.fareye.divyanshu.dynamicdatabase;
+package com.fareye.divyanshu.dynamicdatabase.DTO;
 
 import java.util.ArrayList;
 

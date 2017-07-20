@@ -14,13 +14,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.fareye.divyanshu.dynamicdatabase.AddYourJson;
-import com.fareye.divyanshu.dynamicdatabase.FormAttributes;
-import com.fareye.divyanshu.dynamicdatabase.FormAttributesTable;
-import com.fareye.divyanshu.dynamicdatabase.FormMasterDB;
+import com.fareye.divyanshu.dynamicdatabase.MainClasses.AddYourJson;
+import com.fareye.divyanshu.dynamicdatabase.DTO.FormAttributes;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormAttributesTable;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB;
 import com.fareye.divyanshu.dynamicdatabase.R;
-import com.fareye.divyanshu.dynamicdatabase.SaveFieldsInDatabase;
-import com.fareye.divyanshu.dynamicdatabase.SaveFieldsTable;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase;
+import com.fareye.divyanshu.dynamicdatabase.DTO.SaveFieldsTable;
 
 import java.util.ArrayList;
 

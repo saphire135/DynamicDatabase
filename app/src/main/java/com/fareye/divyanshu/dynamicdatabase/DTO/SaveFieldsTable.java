@@ -1,4 +1,4 @@
-package com.fareye.divyanshu.dynamicdatabase;
+package com.fareye.divyanshu.dynamicdatabase.DTO;
 
 /**
  * Created by diyanshu on 18/7/17.

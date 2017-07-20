@@ -11,15 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fareye.divyanshu.dynamicdatabase.FormAttributes;
-import com.fareye.divyanshu.dynamicdatabase.FormAttributesTable;
+import com.fareye.divyanshu.dynamicdatabase.DTO.FormAttributes;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormAttributesTable;
 import com.fareye.divyanshu.dynamicdatabase.R;
-import com.fareye.divyanshu.dynamicdatabase.SaveFieldsInDatabase;
-import com.fareye.divyanshu.dynamicdatabase.SaveFieldsTable;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase;
+import com.fareye.divyanshu.dynamicdatabase.DTO.SaveFieldsTable;
 
 import java.util.ArrayList;
 
-import static com.fareye.divyanshu.dynamicdatabase.FormMasterDB.KEY_FORM_ID;
+import static com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB.KEY_FORM_ID;
 
 public class ViewFormOfAttributes extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class ViewFormOfAttributes extends AppCompatActivity {
     SaveFieldsInDatabase saveFieldsInDatabase;
     LinearLayout parentLinearLayout;
     ArrayList<SaveFieldsTable> formArrayList;
-    EditText[] formAttributeValueETArray;
+    EditText[] arraylistOfEdittextFields;
     TextView formAttributeLabelTV;
 
 
@@ -38,7 +38,7 @@ public class ViewFormOfAttributes extends AppCompatActivity {
         Intent intent = getIntent();
 
         formAttributesArrayList = new FormAttributesTable(this).getAttributes(intent.getIntExtra(KEY_FORM_ID, 0));
-        Log.i("test()>>>>>>", formAttributesArrayList.size() + "");
+        Log.i("Testing for size", formAttributesArrayList.size() + "");
         parentLinearLayout = (LinearLayout) findViewById(R.id.form_attribute_layout);
         saveFieldsInDatabase = new SaveFieldsInDatabase(this);
         int startAttributeID = Integer.parseInt(formAttributesArrayList.get(0).getId());
@@ -56,29 +56,28 @@ public class ViewFormOfAttributes extends AppCompatActivity {
     private void buildFormView(ArrayList<SaveFieldsTable> formArrayList) {
         Log.d("ViewFormActivity", "buildFormView");
         //Toast.makeText(this, formArrayList.size() + "", Toast.LENGTH_LONG).show();
-        formAttributeValueETArray = new EditText[formArrayList.size()];
+        arraylistOfEdittextFields = new EditText[formArrayList.size()];
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        for (int i = 0; i < formAttributeValueETArray.length; i++) {
-            formAttributeValueETArray[i] = new EditText(this);
+        for (int i = 0; i < arraylistOfEdittextFields.length; i++) {
+            arraylistOfEdittextFields[i] = new EditText(this);
             formAttributeLabelTV = new TextView(this);
-            formAttributeValueETArray[i].setPadding(10, 10, 10, 30);
-            formAttributeValueETArray[i].setLayoutParams(params);
+            arraylistOfEdittextFields[i].setPadding(10, 10, 10, 30);
+            arraylistOfEdittextFields[i].setLayoutParams(params);
             formAttributeLabelTV.setPadding(10, 10, 10, 10);
             formAttributeLabelTV.setTypeface(null, Typeface.BOLD_ITALIC);
             formAttributeLabelTV.setLayoutParams(params);
             if (formAttributesArrayList.get(i).getType().equals("number")) {
-                formAttributeValueETArray[i].setInputType(InputType.TYPE_CLASS_NUMBER);
+                arraylistOfEdittextFields[i].setInputType(InputType.TYPE_CLASS_NUMBER);
             } else if (formAttributesArrayList.get(i).getType().equals("string")) {
-                formAttributeValueETArray[i].setInputType(InputType.TYPE_CLASS_TEXT);
+                arraylistOfEdittextFields[i].setInputType(InputType.TYPE_CLASS_TEXT);
             } else if (formAttributesArrayList.get(i).getType().equals("text")) {
-                formAttributeValueETArray[i].setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-                formAttributeValueETArray[i].setLines(3);
+                arraylistOfEdittextFields[i].setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                arraylistOfEdittextFields[i].setLines(3);
             }
             formAttributeLabelTV.setText(formAttributesArrayList.get(i).getLabel());
-            formAttributeValueETArray[i].setText(formArrayList.get(i).getFormAttributeValue());
+            arraylistOfEdittextFields[i].setText(formArrayList.get(i).getFormAttributeValue());
             parentLinearLayout.addView(formAttributeLabelTV);
-            parentLinearLayout.addView(formAttributeValueETArray[i]);
+            parentLinearLayout.addView(arraylistOfEdittextFields[i]);
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package com.fareye.divyanshu.dynamicdatabase;
+package com.fareye.divyanshu.dynamicdatabase.MainClasses;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,13 +7,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.fareye.divyanshu.dynamicdatabase.R;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormAttributesTable;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.SaveFieldsInDatabase;
 import com.fareye.divyanshu.dynamicdatabase.ViewForms.ViewVariousForms;
 
-import static com.fareye.divyanshu.dynamicdatabase.FormMasterDB.DATABASE_NAME;
+import static com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB.DATABASE_NAME;
 
 public class AddYourJson extends AppCompatActivity {
 
@@ -54,11 +59,16 @@ public class AddYourJson extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 url = jsonLink.getText().toString();
-                Log.d("GoButton is working", url);
 
-                ConnectionEstablishment established = new ConnectionEstablishment(AddYourJson.this, sqLiteDatabase);
-                established.execute(url);
-                Log.d("Strings", "Connection established successfully");
+                if (URLUtil.isValidUrl(url)) {
+
+                    Log.d("GoButton is working", url);
+
+                    ConnectionEstablishment established = new ConnectionEstablishment(AddYourJson.this, sqLiteDatabase);
+                    established.execute(url);
+                    Log.d("Strings", "Connection established successfully");
+                } else
+                    Toast.makeText(AddYourJson.this, "Please Enter a Valid LINK", Toast.LENGTH_SHORT).show();
             }
         });
 

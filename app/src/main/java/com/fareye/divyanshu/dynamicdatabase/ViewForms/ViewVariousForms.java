@@ -10,8 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import com.fareye.divyanshu.dynamicdatabase.FormMaster;
-import com.fareye.divyanshu.dynamicdatabase.FormMasterDB;
+import com.fareye.divyanshu.dynamicdatabase.DTO.FormMaster;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB;
 import com.fareye.divyanshu.dynamicdatabase.R;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import Adapters.FormAdapterClickListener;
 import Adapters.FormViewAdapter;
 
-import static com.fareye.divyanshu.dynamicdatabase.FormMasterDB.KEY_FORM_ID;
+import static com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB.KEY_FORM_ID;
 
 public class ViewVariousForms extends AppCompatActivity implements FormAdapterClickListener {
 
@@ -58,14 +58,14 @@ public class ViewVariousForms extends AppCompatActivity implements FormAdapterCl
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(ViewVariousForms.this, ViewFormOfAttributes.class);
                 intent.putExtra(KEY_FORM_ID, formMaster.getId());
-                Log.d("test()", formMaster.getId() + "");
+                Log.d("testing FormMasterId", formMaster.getId() + "");
                 startActivity(intent);
             }
         });
         alertDialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(ViewVariousForms.this, FillAttributes.class);
-                Log.d("test()>>>>>>>>>>>>", formMaster.getId() + "");
+                Log.d("Getting FormMAsterId", formMaster.getId() + "");
                 intent.putExtra(FORMID, formMaster.getId());
                 intent.putExtra(FORMNAME, formMaster.getName());
                 startActivity(intent);

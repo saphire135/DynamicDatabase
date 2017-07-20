@@ -2,11 +2,11 @@ package Adapters;
 
 import android.view.View;
 
-import com.fareye.divyanshu.dynamicdatabase.FormMaster;
+import com.fareye.divyanshu.dynamicdatabase.DTO.FormMaster;
 
 
 /**
- * Created by abhishek on 14/7/17.
+ * Created by divyanshu on 14/7/17.
  */
 
 public interface FormAdapterClickListener {

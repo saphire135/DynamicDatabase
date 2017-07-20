@@ -1,4 +1,4 @@
-package com.fareye.divyanshu.dynamicdatabase;
+package com.fareye.divyanshu.dynamicdatabase.MainClasses;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,10 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.fareye.divyanshu.dynamicdatabase.DTO.FormMaster;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormAttributesTable;
+import com.fareye.divyanshu.dynamicdatabase.TablesOfDatabase.FormMasterDB;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -47,8 +48,6 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
         progressDialog = ProgressDialog.show(mcontext,
                 "ProgressDialog",
                 "Wait for some seconds");
-
-
     }
 
     @Override
@@ -60,9 +59,10 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
         Log.d("Form Link", link);
         URL url;//Object of url class.
         HttpURLConnection urlConnection = null;//Object of httpurlconnection class.
-//
+
         try {
             url = new URL(link);//String conversion in url type.
+
             urlConnection = (HttpURLConnection) url.openConnection();//Urlconnection opened.
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             //FormMasterDB the BufferedInputStream in the form of Inputstream.
@@ -77,10 +77,10 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
             bufferedReader.close();//Closing BufferedReader.
             String linknew = stringBuilder.toString();
 //            String linknew = "{ \"id\": 1, \"name\":\"Home\", \"formMaster\": [ { \"id\": 1, \"label\": \"Firstname\", \"type\": \"string\", \"sequence\": 1 }, { \"id\": 2, \"label\": \"Lastname\", \"type\": \"string\", \"sequence\": 2 }, { \"id\": 3, \"label\": \"Contact\", \"type\": \"number\", \"sequence\": 3 }, { \"id\": 4, \"label\": \"Address\", \"type\": \"text\", \"sequence\":4 } ] }";
-            buildUserList(linknew);
+            formMaster=  buildUserList(linknew);
 
             if (linknew != null) {
-                formMaster = buildUserList(linknew);
+
                 Log.d("linknew", "check for formmaster");
                 if (formMaster != null) {
                     String status;
@@ -93,7 +93,6 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
                     }
                 }
             }
-
         } catch (Exception e) {
             Log.e("ERROR", e.getMessage(), e);//Logs are used to show what to know whether it got success or it get failed.
         } finally {
@@ -112,7 +111,6 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
         Log.d("FetchRequestData", "in buildUserList()");
         FormMaster formMaster;
         try {
-            JSONObject jsonObject = new JSONObject(response);
             formMaster = gson.fromJson(response, FormMaster.class);
             Log.d("forms id", String.valueOf(formMaster.getId()));
             Log.d("forms name", String.valueOf(formMaster.getName()));
@@ -122,7 +120,6 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
             return null;
         }
     }
-
     private boolean storeData(FormMaster formMaster) {
         try {
             Log.d("FetchRequestData", "in storeData()");
@@ -135,12 +132,9 @@ class ConnectionEstablishment extends AsyncTask<String, String, String> {
         } catch (Exception e) {
             Log.e("FetchRequestData", "Exception in storeData()");
 
-            //  formMasterDB.testMasterDB();
-            // formAttributesDB.testAttributesDB();
             return true;
         } finally {
             sqLiteDatabase.endTransaction();
-            sqLiteDatabase.close();
-        }
+                    }
     }
 }

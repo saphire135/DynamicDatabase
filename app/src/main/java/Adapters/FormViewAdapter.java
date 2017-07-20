@@ -9,14 +9,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.fareye.divyanshu.dynamicdatabase.FormMaster;
+import com.fareye.divyanshu.dynamicdatabase.DTO.FormMaster;
 import com.fareye.divyanshu.dynamicdatabase.R;
 import com.fareye.divyanshu.dynamicdatabase.ViewForms.ViewVariousForms;
 
 import java.util.ArrayList;
 
 /**
- * Created by abhishek on 14/7/17.
+ * Created by divyanshu on 14/7/17.
  */
 
 public class FormViewAdapter extends RecyclerView.Adapter<FormViewAdapter.FormViewHolder> {
